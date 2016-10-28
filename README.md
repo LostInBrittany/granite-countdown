@@ -14,7 +14,7 @@
 ```
 <custom-element-demo>
   <template>
-      <link rel=”import” href=”./granite-countdown.html”>
+      <link rel="import" href="./granite-countdown.html">
   </template>    
 </custom-element-demo>
 ```
