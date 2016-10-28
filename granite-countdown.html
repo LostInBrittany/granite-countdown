@@ -1,0 +1,158 @@
+<!--
+@license MIT
+Copyright (c) 2016 Horacio "LostInBrittany" Gonzalez
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+`<granite-countdown>` is a simple countdown widget.
+
+Typical usage:
+
+```html
+<granite-countdown value="42" digits="4" label="Time to go"></granite-countdown>
+```
+
+`value` must be a positive integer number, and it must fit into `digits` digits.
+
+The following custom properties and mixins are also available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--granite-countdown-digits` | Mixin applied to the digits | `{}`
+
+    
+@element granite-countdown
+@blurb A is a simple countdown widget
+@homepage index.html
+@demo demo/index.html
+-->
+<dom-module is="granite-countdown">
+
+	<template>
+		<style>
+			:host {
+				display: flex;
+				flex-flow: column nowrap;
+				align-items: center;
+				padding: 1em;
+			}
+			
+			.value {
+				display: flex;
+				flex-flow: row nowrap;
+			}
+			
+			.digit {
+				border-radius: 0.25em;
+				padding: 0.25em 0.5em;
+				margin: 0.5em 0.15em;
+				color: white;
+				background-color: darkgrey;
+				border-color: #ccc;
+				@apply(--granite-countdown-digits);
+			}
+			
+			.label {}
+		</style>
+
+		<div class="value">
+			<template is="dom-repeat" items="{{_valueInDigits}}" as="digit">
+				<div class="digit">{{digit}}</div>
+			</template>
+		</div>
+		<div class="label">
+			{{label}}
+		</div>
+
+	</template>
+
+
+
+	<script>
+      Polymer({
+        is: "granite-countdown",
+
+        properties: {
+          /**
+           * The label of countdown
+           */
+          label: {
+            type: String,
+            value: ""
+          },
+          /**
+           * The current value of the countdown. 
+           * Must be a positive integer value fitting into `digits` digits
+           */
+          value: {
+            type: Number,
+            observer: "_onValueChange"
+          },
+          /**
+           * The number of digits to display. 
+           * Must be a positive integer value (of a reasonable size)
+           */
+          digits: {
+            type: Number,
+            observer: "_onDigitsChange"
+          },
+          /**
+           *
+           */
+          _valueInDigits: {
+            type: Array,
+            computed: "_onParamsChange(value,digits)"
+          }, 
+          /**
+           * The max number of digits to display.
+           */
+          MAX_DIGITS: 16,
+          /**
+           * The default number of digits to display
+           */
+          DEFAULT_DIGITS: 4,
+        },
+
+        observers: [
+          
+        ],
+
+        // Observers
+        _onValueChange: function() {
+          if (this.value < 0 || Math.log10(this.value) >= this.digits) {
+            console.debug("[granite-countdown] _onValueChange - `value` is outside bounds: ", this.value);
+            this.value = 0;            
+          }
+          this.value = Math.floor(this.value);
+        },
+        _onDigitsChange: function() {
+          if (this.digits < 0 || this.digits > this.MAX_DIGITS) {
+            console.debug("[granite-countdown] _onDigitsChange - `digits` is outside bounds: ", this.digits);
+            this.digits = this.DEFAULT_DIGITS;            
+          }
+        },
+        _onParamsChange: function() {
+          var valueAsString = this.value.toString();
+          valueAsString =  Array(this.digits+1-valueAsString.length).join('0')+valueAsString;
+          console.debug("[granite-countdown] _onParamsChange - valueAsString: ", valueAsString);
+
+          var valueInDigits = [];
+
+          for (var pos=0; pos < this.digits; pos++) {
+            valueInDigits[pos] = valueAsString[pos];
+          }
+          console.debug("[granite-countdown] _onParamsChange - valueInDigits: ", valueInDigits);
+          return valueInDigits;
+        },
+
+      });
+    </script>
+
+</dom-module>
