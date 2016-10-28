@@ -10,16 +10,19 @@
 [https://lostinbrittany.github.io/granite-countdown](https://lostinbrittany.github.io/granite-countdown)
 
 ## Usage example
-<!--
+
+<!---
 ```
 <custom-element-demo>
   <template>
-      <link rel="import" href="./granite-countdown.html">
-  </template>    
+    <script src="../webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="granite-countdown.html">
+    <next-code-block></next-code-block>
+  </template>
 </custom-element-demo>
 ```
 -->
-```
+```html
 <granite-countdown value="42" digits="4" label="Time to go"></granite-countdown>
 ```
 
